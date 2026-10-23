@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; }
+  a { color: #1F5594; text-decoration: none; }
+  a:hover { color: #084928; text-decoration: underline; }
+  input::placeholder { color: #5D6567; }
+  input:focus { outline: none; border-color: #1F5594 !important; box-shadow: 0 0 0 3px rgba(11,99,54,0.12); }
+</style>
+</helmet>
+<div style="display:flex; min-height:100vh; width:100%; font-family:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; background:#FFFFFF;">
+
+  <div style="flex:0 0 45%; min-width:320px; position:relative; background:url('assets/signin-bg-blue.png') center/cover no-repeat; display:flex; flex-direction:column; padding:56px 64px; box-sizing:border-box; overflow:hidden;">
+    <div style="position:relative; display:flex; align-items:center; gap:10px;">
+      <div style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #14497F; flex-shrink: 0; background-color: #FFFFFFB7">C</div>
+      <span style="font-weight:700; font-size:18px; color:#FFFFFF;">Civi</span>
+    </div>
+    <div style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; gap:20px; max-width:440px;">
+      <h1 style="margin: 0; font-size: 38px; line-height: 1.2; font-weight: 600; color: #FFFFFF">Smarter tax audits start here</h1>
+      <p style="margin:0; font-size:16px; line-height:1.6; font-weight:400; color:#D6E4F2;">Access filings, review taxpayer information, track findings, and manage your audit workflow from a single workspace.</p>
+    </div>
+  </div>
+
+  <div style="flex:1; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px 120px;">
+    <sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ true }}">
+    <div style="width:100%; max-width:420px; display:flex; flex-direction:column; gap:28px;">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <h2 style="margin:0; font-size:28px; font-weight:700; color:#102124; line-height:1.2;">Welcome back!</h2>
+        <p style="margin:0; font-size:15px; line-height:1.5; font-weight:400; color:#5D6567;">Your trusted gateway to smarter tax audits&nbsp;</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label style="font-size:14px; font-weight:600; color:#102124;">Email</label>
+          <input type="text" placeholder="Enter email address" value="{{ email }}" oninput="{{ onEmailChange }}" style="height:52px; border-radius:12px; border:1px solid #DCDEDE; padding:0 16px; font-size:15px; font-family:inherit; color:#102124; box-sizing:border-box;">
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label style="font-size:14px; font-weight:600; color:#102124;">Password</label>
+            <a href="#" style="font-size:13px; font-weight:600;">Forgot password?</a>
+          </div>
+          <input type="password" placeholder="Enter password" value="{{ password }}" oninput="{{ onPasswordChange }}" style="height:52px; border-radius:12px; border:1px solid #DCDEDE; padding:0 16px; font-size:15px; font-family:inherit; color:#102124; box-sizing:border-box;">
+        </div>
+
+        <button type="button" onclick="{{ goToVerify }}" disabled="{{ signInDisabled }}" style="{{ signInButtonStyle }}">Sign in</button>
+      </div>
+
+      
+    </div>
+    </sc-if>
+    <sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
+    <div style="width:100%; max-width:420px; display:flex; flex-direction:column; gap:24px;">
+      <button type="button" onclick="{{ goToSignIn }}" style="align-self:flex-start; background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center; color:#5D6567;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5D6567" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+      </button>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <h2 style="margin:0; font-size:28px; font-weight:700; color:#102124; line-height:1.2;">Verify your email</h2>
+        <p style="margin:0; font-size:15px; line-height:1.5; font-weight:400; color:#5D6567;">We've sent a 6-digit code to <strong style="color:#102124;">tax.manager@yopmail.com</strong>. Enter it below to continue.</p>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <sc-for list="{{ otpBoxes }}" as="box" hint-placeholder-count="6">
+          <input type="text" maxlength="1" inputmode="numeric" id="{{ box.inputId }}" value="{{ box.value }}" oninput="{{ box.onChange }}" onkeydown="{{ box.onKeyDown }}" style="width:100%; height:56px; text-align:center; border-radius:12px; border:1px solid #DCDEDE; font-size:20px; font-family:inherit; color:#102124; box-sizing:border-box;">
+        </sc-for>
+      </div>
+
+      <div style="text-align:center; font-size:14px; color:#5D6567;">Didn't get a code? <a href="#">Resend in 48s</a></div>
+
+      <button type="button" onclick="{{ onVerify }}" disabled="{{ verifyDisabled }}" style="{{ verifyButtonStyle }}">Verify Code</button>
+    </div>
+    </sc-if>
+
+    <div style="position:absolute; bottom:32px; left:0; right:0; display:flex; justify-content:center; align-items:center; gap:16px;">
+      <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:#5D6567;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5D6567" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+        Secure
+      </div>
+      <div style="width:4px; height:4px; border-radius:50%; background:#DCDEDE;"></div>
+      <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:#5D6567;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5D6567" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+        Encrypted
+      </div>
+      <div style="width:4px; height:4px; border-radius:50%; background:#DCDEDE;"></div>
+      <div style="display:flex; align-items:center; gap:6px; font-size:13px; color:#5D6567;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5D6567" stroke-width="2"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        Trusted
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { accountType: 'individual', screen: 'signin', email: '', password: '', otp: ['', '', '', '', '', ''] };
+
+  tabStyle(active) {
+    return {
+      flex: 1,
+      padding: '12px 0',
+      borderRadius: '10px',
+      border: 'none',
+      background: active ? '#FFFFFF' : 'transparent',
+      color: active ? '#102124' : '#5D6567',
+      fontWeight: 700,
+      fontSize: '14px',
+      fontFamily: 'inherit',
+      cursor: 'pointer',
+      boxShadow: active ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+    };
+  }
+
+  renderVals() {
+    const canSubmit = this.state.email.trim().length > 0 && this.state.password.trim().length > 0;
+    return {
+      individualTabStyle: this.tabStyle(this.state.accountType === 'individual'),
+      businessTabStyle: this.tabStyle(this.state.accountType === 'business'),
+      selectIndividual: () => this.setState({ accountType: 'individual' }),
+      selectBusiness: () => this.setState({ accountType: 'business' }),
+      isSignIn: this.state.screen === 'signin',
+      isVerify: this.state.screen === 'verify',
+      goToVerify: () => { if (canSubmit) this.setState({ screen: 'verify' }); },
+      goToSignIn: () => this.setState({ screen: 'signin' }),
+      otpBoxes: this.state.otp.map((value, i) => ({
+        value,
+        inputId: 'otp-box-' + i,
+        onChange: (e) => {
+          const digit = e.target.value.slice(-1);
+          const next = [...this.state.otp];
+          next[i] = digit;
+          this.setState({ otp: next });
+          if (digit && i < next.length - 1) {
+            const nextEl = document.getElementById('otp-box-' + (i + 1));
+            if (nextEl) nextEl.focus();
+          }
+        },
+        onKeyDown: (e) => {
+          if (e.key === 'Backspace' && !this.state.otp[i] && i > 0) {
+            const prevEl = document.getElementById('otp-box-' + (i - 1));
+            if (prevEl) prevEl.focus();
+          }
+        },
+      })),
+      verifyDisabled: this.state.otp.some((d) => d === ''),
+      onVerify: () => { window.location.href = './Auditor Dashboard - Individual Tax Payers.dc.html'; },
+      verifyButtonStyle: {
+        height: '52px',
+        borderRadius: '12px',
+        border: 'none',
+        background: this.state.otp.some((d) => d === '') ? '#DCDEDE' : '#1F5594',
+        color: this.state.otp.some((d) => d === '') ? '#5D6567' : '#FFFFFF',
+        fontSize: '16px',
+        fontWeight: 600,
+        cursor: this.state.otp.some((d) => d === '') ? 'not-allowed' : 'pointer',
+        fontFamily: 'inherit',
+      },
+      email: this.state.email,
+      password: this.state.password,
+      onEmailChange: (e) => this.setState({ email: e.target.value }),
+      onPasswordChange: (e) => this.setState({ password: e.target.value }),
+      signInDisabled: !canSubmit,
+      signInButtonStyle: {
+        height: '52px',
+        borderRadius: '12px',
+        border: 'none',
+        background: canSubmit ? '#1F5594' : '#DCDEDE',
+        color: canSubmit ? '#FFFFFF' : '#5D6567',
+        fontSize: '16px',
+        fontWeight: 600,
+        cursor: canSubmit ? 'pointer' : 'not-allowed',
+        fontFamily: 'inherit',
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
